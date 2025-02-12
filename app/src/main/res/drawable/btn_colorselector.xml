@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Color al hacer clic -->
+    <item android:state_pressed="true" android:color="@color/btn_pressed" />
+    <!-- Color al pasar el cursor por encima -->
+    <item android:state_hovered="true" android:color="@color/btn_hovered" />
+    <!-- Color normal -->
+    <item android:color="@color/btn_default" />
+</selector>

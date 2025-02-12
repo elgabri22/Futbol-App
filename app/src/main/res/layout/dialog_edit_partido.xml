@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/resumen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Resumen"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/imagen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Imagen"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etLocal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Equipo Local"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etVisitante"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Equipo Visitante"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etHorario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Horario"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etCanal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Canal de Emisión"
+        android:inputType="text" />
+
+</LinearLayout>

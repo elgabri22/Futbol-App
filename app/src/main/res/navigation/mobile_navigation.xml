@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.proyecto.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_homeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.proyecto.ui.login.LoginFragment"
+        android:label="Login Fragment"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_MainMenu"
+            app:destination="@id/main_menu" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/main_menu"
+        android:name="com.example.proyecto.ui.main_menu.MainMenuFragment"
+        android:label="Menú principal"
+        tools:layout="@layout/fragment_main_menu">
+        <action
+            android:id="@+id/action_mainmenu_to_partidos"
+            app:destination="@id/partidos_disponibles" />
+        <action
+            android:id="@+id/action_mainMenu_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+
+
+
+    <fragment
+        android:id="@+id/partidos_disponibles"
+        android:name="com.example.proyecto.ui.partidos_disponibles.PartidosDisponiblesFragment"
+        android:label="Partidos Disponibles"
+        tools:layout="@layout/fragment_partidos_disponibles" />
+</navigation>
