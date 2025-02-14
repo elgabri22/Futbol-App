@@ -51,9 +51,9 @@ class DialogNewPartido(
             id= "",
             visitante = binding.etVisitante.text.toString(),
             local = binding.etLocal.text.toString(),
-            resumen_partido = binding.etHorario.text.toString(),
-            imagen = binding.etCanal.text.toString(),
-            canal_emision = "gfgjjf",
+            resumen_partido = binding.resumen.text.toString(),
+            imagen = binding.imagen.text.toString(),
+            canal_emision = binding.etCanal.text.toString(),
             horario = binding.etHorario.text.toString(),
         )
     }
