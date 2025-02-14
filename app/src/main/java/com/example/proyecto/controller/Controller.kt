@@ -1,96 +1,74 @@
 package com.example.proyecto.controller
 
-import android.content.Context
+import android.util.Log
 import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.proyecto.adapter.AdapterPartido
-import com.example.proyecto.dao.PartidosDAOimp
-import com.example.proyecto.dialogues.DialogDeletePartido
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.proyecto.dialogues.DialogEditPartido
 import com.example.proyecto.models.Partido
-import com.example.proyecto.ui.partidos_disponibles.PartidosDisponiblesFragment
+import com.example.proyecto.repositories.Repository
 import com.example.proyecto_quizz_ericmacia.dialogues.DialogNewPartido
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
-class Controller(
-    val context: Context,
-    val contextFragment: PartidosDisponiblesFragment
-) {
-    lateinit var adapterPartido: AdapterPartido
-    lateinit var layoutManager: LinearLayoutManager
-    lateinit var listPartidos: MutableList<Partido>
+class Controller : ViewModel() {
+
+    // LiveData para observar la lista de partidos
+    private val _partidos = MutableLiveData<List<Partido>>()
+    val partidos: LiveData<List<Partido>> get() = _partidos
 
     init {
-        initData()
+        obtenerPartidos()
     }
 
-    // Inicializa el layoutManager y la lista de trivias
-    fun initData() {
-        setScrollWithOffsetLinearLayout()
-        listPartidos = PartidosDAOimp.myDao.getDataPartidos().toMutableList()
-        initOnClickListener()
-    }
-
-    // Establece el comportamiento del layoutManager con desplazamiento
-    private fun setScrollWithOffsetLinearLayout() {
-        layoutManager = contextFragment.bindingFragment.myRecyclerView.layoutManager as LinearLayoutManager
-    }
-
-    // Inicializa el listener para el botón de agregar trivia
-    private fun initOnClickListener() {
-        contextFragment.bindingFragment.btnAddPartido.setOnClickListener {
-            addTrivia()
+    // Obtener la lista de partidos desde Firestore usando una corrutina
+    private fun obtenerPartidos() {
+        Repository.getPartidos{ lista ->
+            _partidos.postValue(lista)
         }
     }
 
-    // Configura el adaptador del RecyclerView
-    fun setAdapter() {
-        adapterPartido = AdapterPartido(
-            listPartidos,
-            { pos -> delTrivia(pos) },
-            { pos -> updateTrivia(pos) }
-        )
-        contextFragment.bindingFragment.myRecyclerView.adapter = adapterPartido
-    }
-
-    fun updateTrivia(pos: Int) {
-        val editDialog = DialogEditPartido(listPartidos[pos]) {
-                editTrivia -> okOnEditContext(editTrivia, pos)
+    // Agregar un nuevo partido
+    fun agregarPartido(partido: Partido) {
+        viewModelScope.launch {
+            try {
+                Repository.addPartido(partido)
+                obtenerPartidos()
+            } catch (e: Exception) {
+                // Manejar el error (puedes registrar el error o mostrar un mensaje)
+                println("Error al agregar partido: ${e.message}")
+            }
         }
-        contextFragment.parentFragmentManager.let { editDialog.show(it, "Editamos una Trivia") }
     }
 
-    fun addTrivia() {
-        Toast.makeText(context, "Añadiremos un nuevo partido", Toast.LENGTH_LONG).show()
-        val dialog = DialogNewPartido { partido -> okOnNewPartido(partido) }
-        contextFragment.parentFragmentManager.let { dialog.show(it, "Añadimos una nueva Trivia") }
+    // Actualizar un partido existente
+    fun actualizarPartido(partido: Partido) {
+        viewModelScope.launch {
+            try {
+                Repository.updatePartido(partido)
+                // Actualizar la lista de partidos después de la actualización
+                obtenerPartidos()
+            } catch (e: Exception) {
+                // Manejar el error
+                println("Error al actualizar partido: ${e.message}")
+            }
+        }
     }
 
-    fun delTrivia(pos: Int) {
-        val dialog = DialogDeletePartido(
-            pos,
-            listPartidos[pos].resumen_partido
-        ) { position -> okOnDeleteTrivia(position) }
+    // Eliminar un partido
+    fun eliminarPartido(partido: Partido) {
+        viewModelScope.launch {
+            try {
+                Repository.deletePartido(partido.id)
+                // Actualizar la lista de partidos después de la eliminación
+                obtenerPartidos()
+            } catch (e: Exception) {
+                // Manejar el error
+                println("Error al eliminar partido: ${e.message}")
+            }
+        }
 
-        contextFragment.parentFragmentManager.let { dialog.show(it, "Borraremos la trivia de posición $pos") }
-    }
-
-    private fun okOnDeleteTrivia(pos: Int) {
-        listPartidos.removeAt(pos)
-        adapterPartido.notifyItemRemoved(pos)
-        Toast.makeText(context, "Trivia borrada", Toast.LENGTH_LONG).show()
-    }
-
-    private fun okOnNewPartido(partido: Partido) {
-        listPartidos.add(listPartidos.size, partido)
-        adapterPartido.notifyItemInserted(listPartidos.lastIndex)
-        layoutManager.scrollToPositionWithOffset(listPartidos.lastIndex, 20)
-    }
-
-    private fun okOnEditContext(editPartido: Partido, pos: Int) {
-        listPartidos.removeAt(pos)
-        adapterPartido.notifyItemRemoved(pos)
-        listPartidos.add(pos, editPartido)
-        adapterPartido.notifyItemInserted(pos)
-        layoutManager.scrollToPositionWithOffset(pos, 20)
     }
 }

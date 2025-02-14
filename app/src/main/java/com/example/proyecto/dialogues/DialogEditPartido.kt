@@ -30,7 +30,7 @@ class DialogEditPartido(
     // Inicializa los argumentos para pasar a la vista del diálogo
     init {
         val args = Bundle().apply {
-            putInt(ARGUMENT_ID, PartidoToUpdate.id)
+            putString(ARGUMENT_ID, PartidoToUpdate.id)
             putString(ARGUMENT_RESUMEN_PARTIDO, PartidoToUpdate.resumen_partido)
             putString(ARGUMENT_LOCAL, PartidoToUpdate.local)
             putString(ARGUMENT_IMAGEN, PartidoToUpdate.imagen)
@@ -84,7 +84,7 @@ class DialogEditPartido(
     private fun recoverDataLayout(view: View): Any {
         val binding = DialogNewPartidoBinding.bind(view)
         return Partido(
-            id= 0,
+            id= "",
             visitante = binding.etVisitante.text.toString(),
             local = binding.etLocal.text.toString(),
             resumen_partido = binding.etHorario.text.toString(),

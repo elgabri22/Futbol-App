@@ -48,7 +48,7 @@ class DialogNewPartido(
     private fun recoverDataLayout(view: View): Any {
         val binding = DialogNewPartidoBinding.bind(view)
         return Partido(
-            id= 0,
+            id= "",
             visitante = binding.etVisitante.text.toString(),
             local = binding.etLocal.text.toString(),
             resumen_partido = binding.etHorario.text.toString(),

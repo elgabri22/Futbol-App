@@ -6,43 +6,76 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proyecto.R
+import com.example.proyecto.adapter.AdapterPartido
 import com.example.proyecto.controller.Controller
 import com.example.proyecto.databinding.FragmentPartidosDisponiblesBinding
+import com.example.proyecto.models.Partido
+import com.example.proyecto_quizz_ericmacia.dialogues.DialogNewPartido
 
 class PartidosDisponiblesFragment : Fragment() {
 
-    lateinit var bindingFragment: FragmentPartidosDisponiblesBinding
-    lateinit var controller: Controller
+    private val controller: Controller by viewModels()
+    private lateinit var adapterPartido: AdapterPartido
 
-
-    /*private val viewModel: PartidosDisponiblesViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // TODO: Use the ViewModel
-    }*/
+    // Usamos el binding de manera segura
+    private var _binding: FragmentPartidosDisponiblesBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        bindingFragment = FragmentPartidosDisponiblesBinding.inflate(inflater, container, false)
-
-        // Inicializa el RecyclerView y el Controller
-        initRecyclerView()
-        // Crea el controlador y pasa el contexto y el fragmento
-        controller = Controller(requireContext(), this)
-        controller.setAdapter()
-
-        return bindingFragment.root
+        // Inflamos el layout correcto y asignamos el binding
+        _binding = FragmentPartidosDisponiblesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private fun initRecyclerView() {
-        // Configura el RecyclerView en el fragmento
-        bindingFragment.myRecyclerView.layoutManager =
-            LinearLayoutManager(context)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Configurar RecyclerView
+        adapterPartido = AdapterPartido(
+            listPartidos = mutableListOf(), // Lista vacía de partidos
+            deleteOnClick = { partido -> // Función para manejar la eliminación
+                controller.eliminarPartido(partido) // Pasamos el partido completo
+                Toast.makeText(requireContext(),"Partido borrado correctamente", Toast.LENGTH_LONG).show()
+            },
+            updateOnClick = { partido -> // Función para manejar la actualización
+                controller.actualizarPartido(partido) // Pasamos el partido completo
+                Toast.makeText(requireContext(),"Partido actualizado correctamente", Toast.LENGTH_LONG).show()
+            }
+        )
+
+        binding.myRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.myRecyclerView.adapter = adapterPartido
+
+        controller.partidos.observe(viewLifecycleOwner) { lista ->
+            adapterPartido.actualizarLista(lista)
+        }
+
+        // Observar datos de Firebase en tiempo real (si es necesario)
+        /*controller.partidos.observe(viewLifecycleOwner) { lista ->
+            adapterPartido.listPartidos = lista.toMutableList()
+            adapterPartido.notifyDataSetChanged()
+        }*/
+
+        // Botón para agregar un nuevo elemento
+        binding.btnAddPartido.setOnClickListener {
+            DialogNewPartido(
+                onNewPartidoDialog = { partido ->
+                    controller.agregarPartido(partido)
+                }
+            ).show(parentFragmentManager, "NewPartidoDialog")
+        }
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Limpiamos el binding para evitar memory leaks
+        _binding = null
     }
 }

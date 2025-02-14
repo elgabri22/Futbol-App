@@ -4,6 +4,6 @@ import com.example.proyecto.models.Partido
 
 
 interface PartidosDAO {
-    fun getDataPartidos(): List<Partido>
+    fun getDataPartidos(callback: Callback)
     fun deletePartido(partido: Partido)
 }
