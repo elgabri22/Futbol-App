@@ -12,6 +12,7 @@ import com.example.proyecto.R
 import com.example.proyecto.adapter.AdapterPartido
 import com.example.proyecto.controller.Controller
 import com.example.proyecto.databinding.FragmentPartidosDisponiblesBinding
+import com.example.proyecto.dialogues.DialogEditPartido
 import com.example.proyecto.models.Partido
 import com.example.proyecto_quizz_ericmacia.dialogues.DialogNewPartido
 
@@ -44,8 +45,9 @@ class PartidosDisponiblesFragment : Fragment() {
                 Toast.makeText(requireContext(),"Partido borrado correctamente", Toast.LENGTH_LONG).show()
             },
             updateOnClick = { partido -> // Función para manejar la actualización
-                controller.actualizarPartido(partido) // Pasamos el partido completo
-                Toast.makeText(requireContext(),"Partido actualizado correctamente", Toast.LENGTH_LONG).show()
+                DialogEditPartido(partido) { partidoActualizado ->
+                    controller.actualizarPartido(partidoActualizado)
+                }.show(parentFragmentManager, "editDialog")
             }
         )
 

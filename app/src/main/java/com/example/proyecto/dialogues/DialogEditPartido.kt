@@ -74,6 +74,8 @@ class DialogEditPartido(
     private fun setValuesIntoDialog(viewDialogEditTrivia: View, arguments: Bundle?) {
         val binding = DialogNewPartidoBinding.bind(viewDialogEditTrivia)
         if (arguments != null) {
+            binding.imagen.setText(arguments.getString(ARGUMENT_IMAGEN))
+            binding.resumen.setText(arguments.getString(ARGUMENT_RESUMEN_PARTIDO))
             binding.etLocal.setText(arguments.getString(ARGUMENT_LOCAL))
             binding.etHorario.setText(arguments.getString(ARGUMENT_HORARIO))
             binding.etVisitante.setText(arguments.getString(ARGUMENT_VISITANTE))
@@ -84,7 +86,7 @@ class DialogEditPartido(
     private fun recoverDataLayout(view: View): Any {
         val binding = DialogNewPartidoBinding.bind(view)
         return Partido(
-            id= "",
+            id= this.arguments?.getString(ARGUMENT_ID) ?: "",
             visitante = binding.etVisitante.text.toString(),
             local = binding.etLocal.text.toString(),
             resumen_partido = binding.etHorario.text.toString(),

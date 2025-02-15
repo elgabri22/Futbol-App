@@ -36,6 +36,7 @@ object Repository {
     suspend fun updatePartido(partido: Partido): Boolean {
         return try {
             if (partido.id.isNotBlank()) {
+                Log.e("A","NO")
                 FirebaseFirestore.getInstance().collection("/partidos").document(partido.id).set(partido).await()
                 true
             } else {
